@@ -4,6 +4,7 @@ FSJS project 5 - Request API
 Written by: Aaron Lipinski
 ******************************************/
 const gallery = document.querySelector('#gallery');
+const card = document.querySelectorAll('.card');
 
 
 
@@ -39,8 +40,6 @@ const generate_card = (data) => {
     gallery.innerHTML = info;
     // console.log(person_info);
 }
-
-const card = document.querySelectorAll('.card');
 
 
 
