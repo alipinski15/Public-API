@@ -4,9 +4,13 @@ FSJS project 5 - Request API
 Written by: Aaron Lipinski
 ******************************************/
 const gallery = document.querySelector('#gallery');
-const card = document.getElementsByClassName('card');
 
 
+/**
+ * This function fetches the data from the URL and converts into JSON. a "catch" method also captures any errors that
+ * might occur and logs them to the console for viewing. 
+ * @param {*} url 
+ */
 
 function fetchData(url) {
     return fetch(url)
@@ -15,16 +19,33 @@ function fetchData(url) {
       .catch(error => console.log('Looks like there was a problem', error))
 }
 
-Promise.all([fetchData('https://randomuser.me/api/?results=12&nat=US')])
+/**
+ * The fetchData promise fetches data asynchronously from the URL provided. An "click" event listener is also created 
+ * to each card that was generated. For each card clicked, that info is passed to the "generate_modal" function. 
+ */
+
+fetchData('https://randomuser.me/api/?results=12&nat=US')
     .then(data => {
-        const employee_info = data[0].results;
-        const info_card = data[0].results;
+        const employee_info = data.results;
 
-        generate_card(employee_info);
-        generate_modal(info_card);
+        generate_cards(employee_info);
+
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+            const card_data = employee_info[index];
+            generate_modal(card_data);
+        });
     })
+})
 
-const generate_card = (data) => { 
+/**
+ * This function uses the data from the "fetchData" promise, then creates and appends the HTML necessary
+ * to display twelve employee cards on the page. 
+ * @param {*} data 
+ */
+
+const generate_cards = (data) => { 
     const info = data.map(person => 
     `<div class="card">
         <div class="card-img-container">
@@ -40,8 +61,19 @@ const generate_card = (data) => {
     gallery.innerHTML = info;
 }
 
-const generate_modal = (data) => {
-    const modal_card = data.map( card => 
+/**
+ * This function appends to the DOM all the necessary information needed to display when an employee card is clicked
+ * and displayed. A click event is also created to close the window that was selected. 
+ * @param {*} card 
+ */
+
+const generate_modal = (card) => {
+    //Creates the correct formatting for the birthday field.
+    const birthday_info = new Date(`${card.dob.date}`);
+    const options = {month: 'long', day: 'numeric', year: 'numeric'}
+    const DOB = new Intl.DateTimeFormat('en-US', options).format(birthday_info)
+    
+    const modal_card =  
     `<div class="modal-container">
         <div class="modal">
             <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
@@ -53,12 +85,15 @@ const generate_modal = (data) => {
                 <hr>
                 <p class="modal-text">${card.phone}</p>
                 <p class="modal-text">${card.location.street.number} ${card.location.street.name}, ${card.location.state} ${card.location.postcode}</p>
-                <p class="modal-text">${card.dob.date}</p>
+                <p class="modal-text">${DOB}</p>
             </div>
         </div>`
-    ).join('');
-}
+    gallery.insertAdjacentHTML('afterend', modal_card);
 
-// card.addEventListener('click', (e) => {
-//     e.target = generate_modal();
-// });
+    //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
+    const close_button = document.getElementById('modal-close-btn');
+    const modal = document.querySelector('.modal-container');
+    close_button.addEventListener('click', (e) => {
+        e.target = modal.style.display = "none";
+    });
+}
