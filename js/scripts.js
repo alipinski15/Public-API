@@ -4,7 +4,7 @@ FSJS project 5 - Request API
 Written by: Aaron Lipinski
 ******************************************/
 const gallery = document.querySelector('#gallery');
-const card = document.querySelectorAll('.card');
+const card = document.getElementsByClassName('card');
 
 
 
@@ -38,10 +38,7 @@ const generate_card = (data) => {
     </div>`
     ).join('');
     gallery.innerHTML = info;
-    // console.log(person_info);
 }
-
-
 
 const generate_modal = (data) => {
     const modal_card = data.map( card => 
@@ -62,6 +59,6 @@ const generate_modal = (data) => {
     ).join('');
 }
 
-card.addEventListener('click', (e) => {
-    e.target = generate_modal();
-});
+// card.addEventListener('click', (e) => {
+//     e.target = generate_modal();
+// });
