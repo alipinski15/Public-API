@@ -4,6 +4,7 @@ FSJS project 5 - Request API
 Written by: Aaron Lipinski
 ******************************************/
 const gallery = document.querySelector('#gallery');
+const search_container = document.querySelector('.search-container');
 
 
 /**
@@ -38,6 +39,8 @@ fetchData('https://randomuser.me/api/?results=12&nat=US')
         });
     })
 })
+
+
 
 /**
  * This function uses the data from the "fetchData" promise, then creates and appends the HTML necessary
@@ -85,9 +88,14 @@ const generate_modal = (card) => {
                 <hr>
                 <p class="modal-text">${card.phone}</p>
                 <p class="modal-text">${card.location.street.number} ${card.location.street.name}, ${card.location.state} ${card.location.postcode}</p>
-                <p class="modal-text">${DOB}</p>
+                <p class="modal-text">DOB: ${DOB}</p>
             </div>
-        </div>`
+        </div>
+        <div class="modal-btn-container">
+                    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                    <button type="button" id="modal-next" class="modal-next btn">Next</button>
+                </div>
+            </div>`
     gallery.insertAdjacentHTML('afterend', modal_card);
 
     //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
@@ -97,3 +105,27 @@ const generate_modal = (card) => {
         e.target = modal.style.display = "none";
     });
 }
+
+const search_bar = () => {
+    const form = 
+    `<form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>`
+    search_container.innerHTML = form;
+}
+search_bar();
+
+const employee_search = (searchInput) => {
+    const cards = document.querySelectorAll('.card');
+    
+}
+employee_search(console.log(cards));
+// document.querySelector('#search-input').addEventListener('keyup', (e) => {
+//     let searched = [];
+//     cards.forEach((card, index) => {
+//         name_searched = employee_info[index];
+//         searched.push(name_searched);
+//     });
+//     console.log(searched);
+// });
