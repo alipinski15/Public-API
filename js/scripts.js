@@ -6,6 +6,7 @@ Written by: Aaron Lipinski
 const gallery = document.querySelector('#gallery');
 const search_container = document.querySelector('.search-container');
 const body = document.querySelector('body');
+let employee_results = [];
 
 
 /**
@@ -29,6 +30,7 @@ function fetchData(url) {
 fetchData('https://randomuser.me/api/?results=12&nat=US')
     .then(data => {
         const employee_info = data.results;
+        employee_results.push(employee_info);
 
         generate_cards(employee_info);
 
@@ -71,7 +73,7 @@ const generate_cards = (data) => {
  * @param {*} card 
  */
 
-const generate_modal = (card, data) => {
+const generate_modal = (card) => {
     //Creates the correct formatting for the birthday field.
     const birthday_info = new Date(`${card.dob.date}`);
     const options = {month: 'long', day: 'numeric', year: 'numeric'}
@@ -101,42 +103,47 @@ const generate_modal = (card, data) => {
 
    
     const close_button = document.getElementById('modal-close-btn');
-    const modal = document.querySelector('.modal-container');
     const previous_button = document.getElementById('modal-prev');
     
      //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
     close_button.addEventListener('click', () => {
-        modal.style.display = "none";
+        document.querySelector('.modal-container').remove();
     });
     
     
     previous_button.addEventListener('click', () => {
-        modal.style.display = "inherit";
-        console.log(generate_modal(card, data));
+        document.querySelector('.modal-container').remove();
+        for(let i = 0; i < employee_results.length; i++){
+            
+        }
     });
 }
 
-const search_bar = () => {
+const search_bar = (names) => {
     const form = 
     `<form action="#" method="get">
         <input type="search" id="search-input" class="search-input" placeholder="Search...">
         <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     </form>`
     search_container.innerHTML = form;
-}
-search_bar();
-
-
-// const employee_search = (searchInput) => {
-//     const cards = document.querySelectorAll('.card');
     
-// }
-// employee_search(console.log(cards));
-// document.querySelector('#search-input').addEventListener('keyup', (e) => {
-//     let searched = [];
-//     cards.forEach((card, index) => {
-//         name_searched = employee_info[index];
-//         searched.push(name_searched);
-//     });
-//     console.log(searched);
-// });
+    const search_input = document.querySelector('#search-input');
+    let searched = [];
+    for(let i = 0; i < names.length; i++){
+        const name_searched = names[i];
+        const variable_name = name_searched.innerHTML;
+        name_searched.style.display = 'none'
+
+        if(variable_name.toLowerCase().includes(search_input.value.toLowerCase())){
+            searched.push(name_searched);
+         }
+        if(search_input.value === ''){
+            searched.style.display = 'block';
+        }
+        console.log(searched);
+    }
+    search_input.addEventListener('keyup', () => {
+        search_bar(employee_results);
+     });
+}
+search_bar(employee_results);
