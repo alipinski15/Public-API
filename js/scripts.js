@@ -5,6 +5,7 @@ Written by: Aaron Lipinski
 ******************************************/
 const gallery = document.querySelector('#gallery');
 const search_container = document.querySelector('.search-container');
+const body = document.querySelector('body');
 
 
 /**
@@ -70,7 +71,7 @@ const generate_cards = (data) => {
  * @param {*} card 
  */
 
-const generate_modal = (card) => {
+const generate_modal = (card, data) => {
     //Creates the correct formatting for the birthday field.
     const birthday_info = new Date(`${card.dob.date}`);
     const options = {month: 'long', day: 'numeric', year: 'numeric'}
@@ -98,11 +99,20 @@ const generate_modal = (card) => {
             </div>`
     gallery.insertAdjacentHTML('afterend', modal_card);
 
-    //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
+   
     const close_button = document.getElementById('modal-close-btn');
     const modal = document.querySelector('.modal-container');
-    close_button.addEventListener('click', (e) => {
-        e.target = modal.style.display = "none";
+    const previous_button = document.getElementById('modal-prev');
+    
+     //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
+    close_button.addEventListener('click', () => {
+        modal.style.display = "none";
+    });
+    
+    
+    previous_button.addEventListener('click', () => {
+        modal.style.display = "inherit";
+        console.log(generate_modal(card, data));
     });
 }
 
@@ -116,11 +126,12 @@ const search_bar = () => {
 }
 search_bar();
 
-const employee_search = (searchInput) => {
-    const cards = document.querySelectorAll('.card');
+
+// const employee_search = (searchInput) => {
+//     const cards = document.querySelectorAll('.card');
     
-}
-employee_search(console.log(cards));
+// }
+// employee_search(console.log(cards));
 // document.querySelector('#search-input').addEventListener('keyup', (e) => {
 //     let searched = [];
 //     cards.forEach((card, index) => {
