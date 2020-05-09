@@ -137,7 +137,6 @@ const generateModal = (card) => {
     });
 
     //CSS style changes for the modal card.
-    
     document.querySelector('.modal').style.backgroundColor = 'rgb(189, 201, 220 , 1)';
     document.querySelector('.modal-btn-container').style.backgroundColor = 'rgb(189, 201, 220 , 1)';
 };
