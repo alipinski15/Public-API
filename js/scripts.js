@@ -3,11 +3,16 @@ Treehouse Techdegree:
 FSJS project 5 - Request API
 Written by: Aaron Lipinski
 ******************************************/
+
+/**
+ * Global Variables
+ */
 const gallery = document.querySelector('#gallery');
 const searchContainer = document.querySelector('.search-container');
 const body = document.querySelector('body');
 
-
+//CSS style change
+body.style.backgroundColor = '#525d6d';
 
 /**
  * This function fetches the data from the URL and converts into JSON. a "catch" method also captures any errors that
@@ -32,7 +37,7 @@ fetchData('https://randomuser.me/api/?results=12&nat=US')
         employeeResults = data.results;
         
     generateCards(employeeResults);
-    searchResults(employeeResults);
+    searchCards(employeeResults);
 })
 
 
@@ -57,9 +62,10 @@ const generateCards = (data) => {
         </div>`
         ).join('');
         gallery.innerHTML = info;
+        
 
+        //Adds the 'click' event to each card. 
         const cards = document.querySelectorAll('.card');
-
         cards.forEach((card, index) => {
             card.addEventListener('click', () => {
             const card_data = employeeResults[index];
@@ -112,7 +118,7 @@ const generateModal = (card) => {
         document.querySelector('.modal-container').remove();
     });
     
-    
+    //Creates the event 'click' for the "Previous" button.
     previousButton.addEventListener('click', () => {
         if(currentIndex > 0){
             document.querySelector('.modal-container').remove();
@@ -120,7 +126,7 @@ const generateModal = (card) => {
             generateModal(employeeResults[prevIndex])
         }
     });
-
+    //Creates the event 'click' for the "Next" button.
     nextButton.addEventListener('click', () => {
         if(currentIndex < 11){
             document.querySelector('.modal-container').remove();
@@ -128,38 +134,41 @@ const generateModal = (card) => {
             generateModal(employeeResults[nextIndex])
         }
     });
+
+    //CSS style changes for the modal card.
+    document.querySelector('.modal').style.backgroundColor = 'rgb(189, 201, 220 , 1)';
+    document.querySelector('.modal-btn-container').style.backgroundColor = 'rgb(189, 201, 220 , 1)';
 };
 
 /**
  * This function appends the search bar and submit button to the DOM. Also add the event listener
- * to the search input field. The function "searchResults" is passed the input value of the search field. 
+ * to the search input field. The function "searchCards" is passed the input value of the search field. 
  */
 
 const appendSearchBar = () => {
     const form = 
     `<form action="#" method="get">
         <input type="search" id="search-input" class="search-input" placeholder="Search...">
-        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     </form>`
     searchContainer.innerHTML = form;
     
     const searchInput = document.querySelector('.search-input');
     searchInput.addEventListener('keyup', (e) => {
         e.preventDefault()
-        searchResults(e.target.value);
+        searchCards(e.target.value);
      });
 }
 appendSearchBar();
 
 /**
- * This function compares what entered into the search field, and compares it to see a name matches. 
- * @param {*} card 
+ * This function compares what entered into the search field, and compares it to see a name matches.
+ * If a name is matched, only those matches will be displayed.
  */
 
-const searchResults = () => {
+const searchCards = () => {
     const searchInput = document.querySelector('.search-input');
     const cards = document.querySelectorAll('.card');
-    const noMatch = document.createElement('h2')
+    const noMatch = document.createElement('h3')
     searchContainer.appendChild(noMatch);
     let searchResults = []
     for(let i = 0; i < cards.length; i++){
@@ -168,13 +177,17 @@ const searchResults = () => {
             searchResults.push(searched);
             cards[i].style.display = '';
         } else {
-            cards[i].style.display = "none"
+            cards[i].style.display = 'none'
         }
     }
     if(searchResults.length > 0){
         noMatch.style.display = 'none';
-     }else if(searchResults.length === 0){
+    } else if(searchResults.length === 0){
         noMatch.style.display = 'block';
+        noMatch.style.color = '#d87676';
         noMatch.textContent = 'Sorry, no match found.';
-     }
+    } 
+    if(searchInput.value === '') {
+        noMatch.style.display = 'none';
+    }
 }
