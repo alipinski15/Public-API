@@ -6,7 +6,7 @@ Written by: Aaron Lipinski
 const gallery = document.querySelector('#gallery');
 const search_container = document.querySelector('.search-container');
 const body = document.querySelector('body');
-let employee_results = [];
+
 
 
 /**
@@ -29,18 +29,10 @@ function fetchData(url) {
 
 fetchData('https://randomuser.me/api/?results=12&nat=US')
     .then(data => {
-        const employee_info = data.results;
-        employee_results.push(employee_info);
-
-        generate_cards(employee_info);
-
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            card.addEventListener('click', () => {
-            const card_data = employee_info[index];
-            generate_modal(card_data);
-        });
-    })
+        employee_results = data.results;
+        
+    generate_cards(employee_results);
+    search_results(employee_results);
 })
 
 
@@ -53,18 +45,27 @@ fetchData('https://randomuser.me/api/?results=12&nat=US')
 
 const generate_cards = (data) => { 
     const info = data.map(person => 
-    `<div class="card">
-        <div class="card-img-container">
-            <img class="card-img" src="${person.picture.large}" alt="profile picture">
-        </div>
-        <div class="card-info-container">
-            <h3 id="name" class="card-name cap">${person.name.first} ${person.name.last}</h3>
-            <p class="card-text">${person.email}</p>
-            <p class="card-text cap">${person.location.city}, ${person.location.state}</p>
-        </div>
-    </div>`
-    ).join('');
-    gallery.innerHTML = info;
+        `<div class="card">
+            <div class="card-img-container">
+                <img class="card-img" src="${person.picture.large}" alt="profile picture">
+            </div>
+            <div class="card-info-container">
+                <h3 id="name" class="card-name cap">${person.name.first} ${person.name.last}</h3>
+                <p class="card-text">${person.email}</p>
+                <p class="card-text cap">${person.location.city}, ${person.location.state}</p>
+            </div>
+        </div>`
+        ).join('');
+        gallery.innerHTML = info;
+
+        const cards = document.querySelectorAll('.card');
+
+        cards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+            const card_data = employee_results[index];
+            generate_modal(card_data);
+        });
+    })
 }
 
 /**
@@ -101,9 +102,10 @@ const generate_modal = (card) => {
             </div>`
     gallery.insertAdjacentHTML('afterend', modal_card);
 
-   
+    const current_index = employee_results.findIndex((employee) => employee.login.uuid === card.login.uuid);
     const close_button = document.getElementById('modal-close-btn');
     const previous_button = document.getElementById('modal-prev');
+    const next_button = document.getElementById('modal-next');
     
      //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
     close_button.addEventListener('click', () => {
@@ -112,14 +114,28 @@ const generate_modal = (card) => {
     
     
     previous_button.addEventListener('click', () => {
-        document.querySelector('.modal-container').remove();
-        for(let i = 0; i < employee_results.length; i++){
-            
+        if(current_index > 0){
+            document.querySelector('.modal-container').remove();
+            const prev_index = current_index -1;
+            generate_modal(employee_results[prev_index])
         }
     });
-}
 
-const search_bar = (names) => {
+    next_button.addEventListener('click', () => {
+        if(current_index < 11){
+            document.querySelector('.modal-container').remove();
+            const next_index = current_index + 1;
+            generate_modal(employee_results[next_index])
+        }
+    });
+};
+
+/**
+ * This function appends the search bar and submit button to the DOM. Also add the event listener
+ * to the search input field. The function "search_results" is passed the input value of the search field. 
+ */
+
+const append_search_bar = () => {
     const form = 
     `<form action="#" method="get">
         <input type="search" id="search-input" class="search-input" placeholder="Search...">
@@ -127,23 +143,29 @@ const search_bar = (names) => {
     </form>`
     search_container.innerHTML = form;
     
-    const search_input = document.querySelector('#search-input');
-    let searched = [];
-    for(let i = 0; i < names.length; i++){
-        const name_searched = names[i];
-        const variable_name = name_searched.innerHTML;
-        name_searched.style.display = 'none'
-
-        if(variable_name.toLowerCase().includes(search_input.value.toLowerCase())){
-            searched.push(name_searched);
-         }
-        if(search_input.value === ''){
-            searched.style.display = 'block';
-        }
-        console.log(searched);
-    }
-    search_input.addEventListener('keyup', () => {
-        search_bar(employee_results);
+    const search_input = document.querySelector('.search-input');
+    search_input.addEventListener('keyup', (e) => {
+        e.preventDefault()
+        search_results(e.target.value);
      });
 }
-search_bar(employee_results);
+append_search_bar();
+
+/**
+ * This function compares what entered into the search field, and compares it to see a name matches. 
+ * @param {*} card 
+ */
+
+const search_results = (card) => {
+    const search_input = document.querySelector('.search-input');
+    const cards = document.querySelectorAll('.card-name');
+    for(let i = 0; i < cards.length; i++){
+        searched = cards[i].innerHTML;
+        searched_name = JSON.stringify(searched)
+    }
+    if(searched_name.toLowerCase() === search_input.value.toLowerCase()){
+        console.log('Hey');
+    } else {
+        console.log('nope');
+    }
+}
