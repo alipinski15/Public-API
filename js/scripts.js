@@ -4,7 +4,7 @@ FSJS project 5 - Request API
 Written by: Aaron Lipinski
 ******************************************/
 const gallery = document.querySelector('#gallery');
-const search_container = document.querySelector('.search-container');
+const searchContainer = document.querySelector('.search-container');
 const body = document.querySelector('body');
 
 
@@ -24,15 +24,15 @@ function fetchData(url) {
 
 /**
  * The fetchData promise fetches data asynchronously from the URL provided. An "click" event listener is also created 
- * to each card that was generated. For each card clicked, that info is passed to the "generate_modal" function. 
+ * to each card that was generated. For each card clicked, that info is passed to the "generateModal" function. 
  */
 
 fetchData('https://randomuser.me/api/?results=12&nat=US')
     .then(data => {
-        employee_results = data.results;
+        employeeResults = data.results;
         
-    generate_cards(employee_results);
-    search_results(employee_results);
+    generateCards(employeeResults);
+    searchResults(employeeResults);
 })
 
 
@@ -43,7 +43,7 @@ fetchData('https://randomuser.me/api/?results=12&nat=US')
  * @param {*} data 
  */
 
-const generate_cards = (data) => { 
+const generateCards = (data) => { 
     const info = data.map(person => 
         `<div class="card">
             <div class="card-img-container">
@@ -62,8 +62,8 @@ const generate_cards = (data) => {
 
         cards.forEach((card, index) => {
             card.addEventListener('click', () => {
-            const card_data = employee_results[index];
-            generate_modal(card_data);
+            const card_data = employeeResults[index];
+            generateModal(card_data);
         });
     })
 }
@@ -74,11 +74,11 @@ const generate_cards = (data) => {
  * @param {*} card 
  */
 
-const generate_modal = (card) => {
+const generateModal = (card) => {
     //Creates the correct formatting for the birthday field.
-    const birthday_info = new Date(`${card.dob.date}`);
+    const birthdayInfo = new Date(`${card.dob.date}`);
     const options = {month: 'long', day: 'numeric', year: 'numeric'}
-    const DOB = new Intl.DateTimeFormat('en-US', options).format(birthday_info)
+    const DOB = new Intl.DateTimeFormat('en-US', options).format(birthdayInfo)
     
     const modal_card =  
     `<div class="modal-container">
@@ -102,70 +102,79 @@ const generate_modal = (card) => {
             </div>`
     gallery.insertAdjacentHTML('afterend', modal_card);
 
-    const current_index = employee_results.findIndex((employee) => employee.login.uuid === card.login.uuid);
-    const close_button = document.getElementById('modal-close-btn');
-    const previous_button = document.getElementById('modal-prev');
-    const next_button = document.getElementById('modal-next');
+    const currentIndex = employeeResults.findIndex((employee) => employee.login.uuid === card.login.uuid);
+    const closeButton = document.getElementById('modal-close-btn');
+    const previousButton = document.getElementById('modal-prev');
+    const nextButton = document.getElementById('modal-next');
     
      //Creates an Event Listener for the "X" button on a employee card. Closes the Card when the "X" is clicked. 
-    close_button.addEventListener('click', () => {
+    closeButton.addEventListener('click', () => {
         document.querySelector('.modal-container').remove();
     });
     
     
-    previous_button.addEventListener('click', () => {
-        if(current_index > 0){
+    previousButton.addEventListener('click', () => {
+        if(currentIndex > 0){
             document.querySelector('.modal-container').remove();
-            const prev_index = current_index -1;
-            generate_modal(employee_results[prev_index])
+            const prevIndex = currentIndex -1;
+            generateModal(employeeResults[prevIndex])
         }
     });
 
-    next_button.addEventListener('click', () => {
-        if(current_index < 11){
+    nextButton.addEventListener('click', () => {
+        if(currentIndex < 11){
             document.querySelector('.modal-container').remove();
-            const next_index = current_index + 1;
-            generate_modal(employee_results[next_index])
+            const nextIndex = currentIndex + 1;
+            generateModal(employeeResults[nextIndex])
         }
     });
 };
 
 /**
  * This function appends the search bar and submit button to the DOM. Also add the event listener
- * to the search input field. The function "search_results" is passed the input value of the search field. 
+ * to the search input field. The function "searchResults" is passed the input value of the search field. 
  */
 
-const append_search_bar = () => {
+const appendSearchBar = () => {
     const form = 
     `<form action="#" method="get">
         <input type="search" id="search-input" class="search-input" placeholder="Search...">
         <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     </form>`
-    search_container.innerHTML = form;
+    searchContainer.innerHTML = form;
     
-    const search_input = document.querySelector('.search-input');
-    search_input.addEventListener('keyup', (e) => {
+    const searchInput = document.querySelector('.search-input');
+    searchInput.addEventListener('keyup', (e) => {
         e.preventDefault()
-        search_results(e.target.value);
+        searchResults(e.target.value);
      });
 }
-append_search_bar();
+appendSearchBar();
 
 /**
  * This function compares what entered into the search field, and compares it to see a name matches. 
  * @param {*} card 
  */
 
-const search_results = (card) => {
-    const search_input = document.querySelector('.search-input');
-    const cards = document.querySelectorAll('.card-name');
+const searchResults = () => {
+    const searchInput = document.querySelector('.search-input');
+    const cards = document.querySelectorAll('.card');
+    const noMatch = document.createElement('h2')
+    searchContainer.appendChild(noMatch);
+    let searchResults = []
     for(let i = 0; i < cards.length; i++){
-        searched = cards[i].innerHTML;
-        searched_name = JSON.stringify(searched)
+        searched = cards[i];
+        if(searched.innerHTML.toLowerCase().includes(searchInput.value.toLowerCase())){
+            searchResults.push(searched);
+            cards[i].style.display = '';
+        } else {
+            cards[i].style.display = "none"
+        }
     }
-    if(searched_name.toLowerCase() === search_input.value.toLowerCase()){
-        console.log('Hey');
-    } else {
-        console.log('nope');
-    }
+    if(searchResults.length > 0){
+        noMatch.style.display = 'none';
+     }else if(searchResults.length === 0){
+        noMatch.style.display = 'block';
+        noMatch.textContent = 'Sorry, no match found.';
+     }
 }
