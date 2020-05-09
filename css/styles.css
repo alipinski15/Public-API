@@ -258,7 +258,7 @@ header h1 {
     }
 
     .btn:hover {
-        background: rgba(255, 255, 255, 1);
+        background: rgb(207, 204, 204);
         color: rgba(25, 25, 25, 1); 
     }
 }
