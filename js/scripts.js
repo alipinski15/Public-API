@@ -10,6 +10,7 @@ Written by: Aaron Lipinski
 const gallery = document.querySelector('#gallery');
 const searchContainer = document.querySelector('.search-container');
 const body = document.querySelector('body');
+const noMatch = document.createElement('h3');
 
 //CSS style change
 body.style.backgroundColor = '#525d6d';
@@ -22,10 +23,10 @@ body.style.backgroundColor = '#525d6d';
 
 function fetchData(url) {
     return fetch(url)
-    //   .then(checkStatus)
       .then(res => res.json())
       .catch(error => console.log('Looks like there was a problem', error))
 }
+
 
 /**
  * The fetchData promise fetches data asynchronously from the URL provided. An "click" event listener is also created 
@@ -168,7 +169,6 @@ appendSearchBar();
 const searchCards = () => {
     const searchInput = document.querySelector('.search-input');
     const cards = document.querySelectorAll('.card');
-    const noMatch = document.createElement('h3')
     searchContainer.appendChild(noMatch);
     let searchResults = []
     for(let i = 0; i < cards.length; i++){
