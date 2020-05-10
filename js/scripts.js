@@ -173,13 +173,14 @@ const searchCards = () => {
     let searchResults = []
     for(let i = 0; i < cards.length; i++){
         searched = cards[i];
-        if(searched.innerHTML.toLowerCase().includes(searchInput.value.toLowerCase())){
+        if(searched.lastElementChild.firstElementChild.innerHTML.toLowerCase().indexOf(searchInput.value.toLowerCase()) != -1){
             searchResults.push(searched);
             cards[i].style.display = '';
         } else {
             cards[i].style.display = 'none'
         }
     }
+    // console.log(searchResults)
     if(searchResults.length > 0){
         noMatch.style.display = 'none';
     } else if(searchResults.length === 0){
