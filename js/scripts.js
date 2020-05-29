@@ -136,6 +136,14 @@ const generateModal = (card) => {
         }
     });
 
+    if(currentIndex === 11) {
+        nextButton.style.display = "none";
+    } else if(currentIndex === 0) {
+        previousButton.style.display = "none";
+    }
+    
+
+
     //CSS style changes for the modal card.
     document.querySelector('.modal').style.backgroundColor = 'rgb(189, 201, 220 , 1)';
     document.querySelector('.modal-btn-container').style.backgroundColor = 'rgb(189, 201, 220 , 1)';
@@ -180,7 +188,6 @@ const searchCards = () => {
             cards[i].style.display = 'none'
         }
     }
-    // console.log(searchResults)
     if(searchResults.length > 0){
         noMatch.style.display = 'none';
     } else if(searchResults.length === 0){
