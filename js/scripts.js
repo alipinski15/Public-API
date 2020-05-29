@@ -135,7 +135,7 @@ const generateModal = (card) => {
             generateModal(employeeResults[nextIndex])
         }
     });
-
+    //Removes the 'Next' or 'Previous'  buttons if viewing the first card or last card. 
     if(currentIndex === 11) {
         nextButton.style.display = "none";
     } else if(currentIndex === 0) {
